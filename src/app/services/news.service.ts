@@ -18,8 +18,11 @@ export class NewsService {
     private http: HttpClient
   ) {  }
 
-  getTopHeadLines( category: string = null ) {
+  getTopHeadLines( page: number = -1, category: string = null ) {
     let params = new HttpParams().set('country', 'mx');
+    if ( page > 1) {
+      params = params.set('page', `${page}` );
+    }
     if ( category ) {
       params = params.set('category', category );
     }

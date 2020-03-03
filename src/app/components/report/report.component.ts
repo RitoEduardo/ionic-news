@@ -15,4 +15,8 @@ export class ReportComponent implements OnInit {
 
   ngOnInit() {}
 
+  openURI( url: string ) {
+
+  }
+
 }

@@ -9,8 +9,9 @@ import { Article } from 'src/app/interfaces/interfaces';
 })
 export class Tab2Page implements OnInit {
 
-  segmentAcept: string;
   news: Article[];
+  segmentAcept: string;
+  page: number;
 
   categories: {
     name: string,
@@ -49,17 +50,51 @@ export class Tab2Page implements OnInit {
   constructor(
     private newsService: NewsService
   ) {
+    this.page = 1;
   }
 
   ngOnInit() {
-    this.segmentAcept = this.categories[1].name;
-  }
-
-  segmentChanged( event ) {
-    console.log( event.detail.value );
-    this.newsService.getTopHeadLines( event.detail.value ).subscribe( resp => {
+    this.segmentAcept = this.categories[0].name;
+    this.newsService.getTopHeadLines( this.page, this.segmentAcept ).subscribe( resp => {
       this.news = resp.articles;
     });
   }
 
+  segmentChanged( event ) {
+    this.page = 1;
+    this.news.length = 0;
+    this.segmentAcept = event.detail.value;
+    console.log( event.detail.value );
+    this.loadNews();
+  }
+
+  loadData( event ) {
+    ++this.page;
+    console.log(  `Segment: ${ this.segmentAcept } , Page: ${ this.page } `);
+    this.loadNews().then( r => {
+      console.log( r );
+      event.target.complete();
+      if ( r === 'Success empty' ) {
+        event.target.disabled = true;
+      }
+    }).catch( e => {
+      console.log( e );
+      event.target.complete();
+    });
+  }
+
+  loadNews() {
+    return new Promise( (resolve, reject) => {
+      this.newsService.getTopHeadLines( this.page, this.segmentAcept  ).subscribe( resp => {
+        if ( resp.articles.length === 0 ) {
+          resolve('Success empty');
+        }
+        if ( resp.status !== 'ok' ) {
+          reject(resp);
+        }
+        this.news.push( ...resp.articles );
+        resolve('Success');
+      });
+    });
+  }
 }

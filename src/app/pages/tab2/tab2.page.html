@@ -1,11 +1,11 @@
-<ion-header [translucent]="true" class="ion-no-border">
+<ion-header [translucent]="false" class="ion-no-border">
   <ion-toolbar>
     <ion-title>
       Headers
     </ion-title>
   </ion-toolbar>
 
-  <ion-segment scrollable mode="md" color="primary" (ionChange)="segmentChanged($event)" [value]="segmentAcept">
+  <ion-segment style="background: #111111;"  scrollable mode="md" color="primary" (ionChange)="segmentChanged($event)" [value]="segmentAcept">
     <ion-segment-button mode="md" *ngFor="let category of categories" [value]="category.name" [ngClass]="category.name.length > 9 ? 'larged-txt' : '' " >
       <ion-label text-capitalaze> {{ category.name }}</ion-label>
       <ion-icon [name]="category.icon"></ion-icon>
@@ -16,4 +16,10 @@
 
 <ion-content [fullscreen]="true">
   <app-news [news]="news"></app-news>
+  <ion-infinite-scroll threshold="150px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>
