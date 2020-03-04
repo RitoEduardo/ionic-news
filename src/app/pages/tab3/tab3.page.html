@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar> <!-- color="dark"  -->
     <ion-title>
-      Favorites
+      Favoritos
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,7 +9,7 @@
 <ion-content [fullscreen]="true"> <!-- color="dark"  -->
   <ion-slides *ngIf="dataLocal.news.length === 0" [options]="slideOpts">
     <ion-slide>
-      <ion-label> {{ 'Not saved favorites' }}</ion-label>
+      <ion-label> {{ 'Ningun Favorito Guardado' }}</ion-label>
     </ion-slide>
   </ion-slides>
   <app-news [news]="dataLocal.news" [showBtnDelete]="true" ></app-news>

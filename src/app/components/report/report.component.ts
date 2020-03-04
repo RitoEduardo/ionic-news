@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Article } from 'src/app/interfaces/interfaces';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { ActionSheetController, ToastController } from '@ionic/angular';
+import { ActionSheetController, ToastController, Platform } from '@ionic/angular';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { DataLocalService } from 'src/app/services/data-local.service';
 
@@ -18,6 +18,7 @@ export class ReportComponent implements OnInit {
 
   constructor(
     private iab: InAppBrowser,
+    private platform: Platform,
     private socialSharing: SocialSharing,
     private actionSheetCtrl: ActionSheetController,
     private dataLocal: DataLocalService,
@@ -39,16 +40,7 @@ export class ReportComponent implements OnInit {
       icon: 'share',
       handler: () => {
         console.log('Share clicked');
-        this.socialSharing.share(
-          this.article.title,
-          this.article.source.name,
-          '',
-          this.article.url
-        ).then( () => {
-          // Sharing is possible
-        }).catch(() => {
-          // Sharing is not possible
-        });
+        this.sharedFunction();
       }
     }, {
       text: 'Cancel',
@@ -96,4 +88,27 @@ export class ReportComponent implements OnInit {
     toast.present();
   }
 
+  sharedFunction() {
+
+    if ( this.platform.is('cordova') ) {
+      return this.socialSharing.share(
+        this.article.title,
+        this.article.source.name,
+        '',
+        this.article.url
+      );
+    }
+    if ( navigator['share'] ) {
+      navigator['share']({
+        title: this.article.title,
+        text: this.article.description,
+        url: this.article.url
+      }).then(() => console.log('Successful share'))
+      .catch((error) => console.log('Error sharing', error));
+    } else {
+      console.log('El navegador no soporta el compartir ');
+    }
+
+    
+  }
 }
